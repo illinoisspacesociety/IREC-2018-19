@@ -14,10 +14,10 @@ const int VALVE_A = 5;            // initialize the Engine valve signal to Pin 5
 const int FIRE_COMMIT = 2;              // initialize the start signal to Pin 2 on Arduino board
 const int IGNITER = 3;            // initialize the ignition signal to Pin 3 on Arduino board
 
-const double COUNTDOWN_LENGTH = 30; // seconds
-const double BNOS_T = COUNTDOWN_LENGTH - 10.0; // T minus 10 seconds: pressurize NOS
-const double ENOS_T = COUNTDOWN_LENGTH - 5.0; // T minus 5 seconds: end pressurize NOS
-const double BOXY_T = COUNTDOWN_LENGTH - 2.0; // T minus .5 seconds: oxidizer start
+const double COUNTDOWN_LENGTH = 50; // seconds
+const double BNOS_T = COUNTDOWN_LENGTH - 30.0; // T minus 30 seconds: pressurize NOS  (ORIGINALLY 10)
+const double ENOS_T = COUNTDOWN_LENGTH - 20.0; // T minus 20 seconds: end pressurize NOS (ORIGINALLY 5)
+const double BOXY_T = COUNTDOWN_LENGTH - 2.0; // T minus 2 seconds: oxidizer start
 const double BIGN_T = COUNTDOWN_LENGTH - 0; // T minus 0 seconds: ignition
 const double ETST_T = COUNTDOWN_LENGTH + 10; // T plus 10 seconds: end of test
 
@@ -148,7 +148,7 @@ void loop() {
 //  while(STATUS == 0) {
 //    
 //    STATUS = digitalRead(START);                  // redefine status after start signal
-//    CBE_PRESSURE = analogRead(PRESSURE_SENSOR);   // read values from pressure transducer
+//    CBE_PRESSURE = 5*(analogRead(PRESSURE_SENSOR)/1023);   // read values from pressure transducer
 //    Serial.println(CBE_PRESSURE);                 // print values to serial monitor (Ctrl + Shift + M)
 //    delay(100);                                   // delay 0.1 seconds
 //  }                                       // exit main loop and end code
@@ -192,9 +192,11 @@ void print_status() {
   Serial.println("> status");
   String a = valveA ? "OPEN": "CLOSED";
   String b = valveB ? "OPEN": "CLOSED";
+  double pressureReadingInVolts = (5*analogRead(PRESSURE_SENSOR)/1023);
+  double pressureInPSIG = 2000*(pressureReadingInVolts-.498)/5.02;
   Serial.print("Valve A is: "); Serial.println(a);
   Serial.print("Valve B is: "); Serial.println(b);
-  Serial.print("Pressure is: "); Serial.println(analogRead(PRESSURE_SENSOR));
+  Serial.print("Pressure is: "); Serial.print(pressureInPSIG); Serial.println(" PSIG");
 }
 
 bool countdown_GO = true;
