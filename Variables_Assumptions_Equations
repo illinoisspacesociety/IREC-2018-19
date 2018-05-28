@@ -1,0 +1,56 @@
+#---------------------------------------------------------------------------------#
+# Creator: Connor Latham
+# Date: Sun. May 27, 2018
+# Version: .1
+#---------------------------------------------------------------------------------#
+# INTRODUCTION
+# This is the equations sheet for the ISS Rocket Engine Kreation Tool (REKT)
+# The unit system is kg, m, s
+#---------------------------------------------------------------------------------#
+# OVERVIEW
+# It is divided into a few sections:
+# 1) Constants
+# 2) Variables
+# 2) Assumptions
+# 3) Fundamental Equations and Definitions
+# 4) General and Ideal Energy and Enthalpy equations
+# 5) Isentropic Nozzle Equations
+#---------------------------------------------------------------------------------#
+# CONSTANTS
+# Gravity: g0 = 9.8066 [m/s^2]
+#
+#---------------------------------------------------------------------------------#
+# VARIABLES
+# Time: t [s]
+# Force: F [kg*m/s^2]
+# Total Impulse: It [kg*m/s]
+# Specific Impulse: Is [s or (kg*m/s)/(kg*m/s^2)]
+# Mass Flow Rate: mdot [kg/s]
+# Weight: w [kg*g0]
+# Weight Flow Rate: wdot [kg*g0/s]
+# Effective Exhaust Velocity: [m/s]
+# Mass Ratio: MR [no units]
+# Propellant Mass Fraction: PMF [no units]
+# Propellant Mass: mProp
+#---------------------------------------------------------------------------------#
+# ASSUMPTIONS
+# 1)
+# 2)
+# 3)
+# 4)
+# 5)
+# 6)
+# 7)
+# 8)
+# 9)
+# 10)
+#---------------------------------------------------------------------------------#
+# FUNDAMENTAL EQUATIONS AND DEFINITIONS
+# Total Impulse: It = integral(F(t),t)
+#                   = F*t for constant thrust
+# Specific Impulse: Is = [integral(F(t),t)]/[g0*integral(mdot,t)] in general
+#                      = It/(g0*mProp) for constant thrust
+#                      = It/w ...
+#                      = F/(mdot*g0) ...
+#                      = F/wdot ...
+#                      
