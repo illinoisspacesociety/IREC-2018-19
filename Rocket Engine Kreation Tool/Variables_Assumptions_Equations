@@ -1,8 +1,4 @@
 #---------------------------------------------------------------------------------#
-# Creator: Connor Latham
-# Date: Sun. May 27, 2018
-# Version: .1
-#---------------------------------------------------------------------------------#
 # INTRODUCTION
 # This is the equations sheet for the ISS Rocket Engine Kreation Tool (REKT)
 # The unit system is kg, m, s
@@ -13,8 +9,7 @@
 # 2) Variables
 # 2) Assumptions
 # 3) Fundamental Equations and Definitions
-# 4) General and Ideal Energy and Enthalpy equations
-# 5) Isentropic Nozzle Equations
+# 4) Ideal Rocket Engine Equations
 #---------------------------------------------------------------------------------#
 # CONSTANTS
 # Gravity: g0 = 9.8066 [m/s^2]
@@ -23,34 +18,77 @@
 # VARIABLES
 # Time: t [s]
 # Force: F [kg*m/s^2]
+# Vehicle Velocity: V
 # Total Impulse: It [kg*m/s]
 # Specific Impulse: Is [s or (kg*m/s)/(kg*m/s^2)]
 # Mass Flow Rate: mdot [kg/s]
-# Weight: w [kg*g0]
+# Initial Weight: wi [kg*g0]
+# Final Weight: wf
 # Weight Flow Rate: wdot [kg*g0/s]
 # Effective Exhaust Velocity: [m/s]
 # Mass Ratio: MR [no units]
 # Propellant Mass Fraction: PMF [no units]
-# Propellant Mass: mProp
+# Propellant Mass: mFuel [kg]
+# Initial Mass of Rocket: mi [kg]
+# Final Mass of Rocket: mf [kg]
+# Initial Mass of Propulsion Subsystem: miProp [kg]
+# >Engine Variables<
+# Chamber Gas Pressure/Area/Temp/Velocity: p1,A1,T1,V1 [Pa,m^2,K,m/s]
+# Nozzle Gas Pressure/Area/Temp/Velocity: pt,At,Tt,Vt ...
+# Exit Gas Pressure/Area/Temp/Velocity: p2,A2,T2,V2 ...
+# Atmospheric Gas Pressure/Temp: patm,Tatm ...
+# Nozzle Expansion Ratio: NER [no units]
+# Characteristic Velocity: cStar [m/s]
+# Power of Jet: Pjet [W]
+# Power Input to Chemical Engine: Pchem [W]
+# Specific Heat of Reaction: Qr [J/kg]
+# Combustion Efficiency: Ncomb [no units]
+# Power Available: Pava [W]
+# Internal Efficiency: Nint [no units]
+# Propulsion Efficiency: Nprop
+#
 #---------------------------------------------------------------------------------#
 # ASSUMPTIONS
-# 1)
-# 2)
-# 3)
-# 4)
-# 5)
-# 6)
-# 7)
-# 8)
-# 9)
-# 10)
+# >Ideal Rocket Engine Assumptions<
+# 1) Working substance (combustion gases) are homogenous
+# 2) Condensed phases of matter are negligible in working substance (only gas)
+# 3) Working substance obeys Perfect/Ideal Gas Law
+# 4) The flow is adiabatic
+# 5) Wall boundary effects are neglected
+# 6) There are no shocks or discontinuities in the nozzle flow
+# 7) Propellant Flow is steady and constant
+# 8) All exhaust gases are directed axially along rocket engine
+# 9) Gas properties are uniform along any cross section
+# 10) The chemical equilibrium does not change anywhere in the engine
+# 11) The propellants are at room temperature (not cryogenic)
 #---------------------------------------------------------------------------------#
 # FUNDAMENTAL EQUATIONS AND DEFINITIONS
 # Total Impulse: It = integral(F(t),t)
 #                   = F*t for constant thrust
 # Specific Impulse: Is = [integral(F(t),t)]/[g0*integral(mdot,t)] in general
-#                      = It/(g0*mProp) for constant thrust
+#                      = It/(g0*mFuel) for constant thrust
 #                      = It/w ...
 #                      = F/(mdot*g0) ...
 #                      = F/wdot ...
-#
+# Effective Exhaust Velocity: c = Is*g0
+#                               = F/mdot
+# Mass Ratio: MR = mf/mi
+#                = (mi-mFuel)/mi
+# Propellant Mass Fraction: PMF = mFuel/miProp
+# Impulse to Weight Ratio: It/wi = It/(g0*[mf-mFuel]) = Is/([mf/mFuel]+1)
+# Thrust: F = mdot*V2 + (p2-patm)*(A2)
+# Nozzle Expansion Ration: NER = A2/At
+# Characteristic Velocity: cStar = p1*At/mdot
+# Power of Jet: Pjet = .5*mdot*v2^2
+#                    = .5*wdot*g0*Is^2
+#                    = .5*F*g0*Is
+#                    = .5*F*v2
+# Power into Chemical Engine: Pchem = mdot*Qr
+# Power Available: Pava = Ncomb*Pchem
+#                       = F*V
+# Internal Efficiency: Nint = (.5*m*V^2)/(Ncomb*Pchem)
+# Propulsion Efficiency: Nprop = F*V/(F*V + .5*mdot*(c-V)^2)
+#                              = (2*V/c)/(1+(V/c)^2)
+#---------------------------------------------------------------------------------#
+# IDEAL ROCKET ENGINE EQUATIONS
+# 
