@@ -5,7 +5,7 @@ from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
 
-#%% Paul DeTrempe, Hybrid rocket load cell data collection script
+#%% Paul DeTrempe8, Hybrid rocket load cell data collection script
 # Big shoutout to Phidget for writing 90% of this
 # Change data collection time duration in %%Collect Data section
 # Change output text file name in %%Store Voltage Ratios section
