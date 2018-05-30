@@ -1,0 +1,15 @@
+class EngineType():
+    def help():
+        print("Hey, so this is where you define what kind of engine you have")
+    def init(self,h,)
+
+class BasicEngineParameters():
+    def init(self,name,thrust,burnTime,chamberP,type):
+        self.name = name
+        self.type = type
+        self.thrust = thrust
+        self.burnTime = burnTime
+        self.chamberP = chamberP
+
+        self.totalImpulse = Force*burnTime
+        self.massPropellant = self.massFlowRate*self.burnTime
