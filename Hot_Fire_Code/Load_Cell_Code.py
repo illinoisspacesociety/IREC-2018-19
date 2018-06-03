@@ -16,7 +16,7 @@ from Phidget22.Net import *
 Vratios = [0.0]
 
 try:
-    ch = VoltageRatioInput()
+    ch = VoltageRatioInput() 
     #ch.open()
 except RuntimeError as e:
     print("Runtime Exception %s" % e.details)
