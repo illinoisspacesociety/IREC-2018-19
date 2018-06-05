@@ -10,13 +10,11 @@ from Phidget22.Net import *
 # Change data collection time duration in %%Collect Data section
 # Change output text file name in %%Store Voltage Ratios section
 
-
-
 # define storage vector of voltage ratios
 Vratios = [0.0]
 
 try:
-    ch = VoltageRatioInput() 
+    ch = VoltageRatioInput()
     #ch.open()
 except RuntimeError as e:
     print("Runtime Exception %s" % e.details)
