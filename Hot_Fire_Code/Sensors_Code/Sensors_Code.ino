@@ -5,8 +5,8 @@
 #define MAXDO 3 //Thermocouple DO on digital pin 3
 #define MAXCS 4 // Thermocouple CS on digital pin 4
 #define MAXCLK 5 // Thermocouple CLK on digital pin 5
-#define PT 17 // Pressure Transducer on analog pin 3 (17)
-#define SDCS 9 // SD Card CS is at 10
+#define PT 3 // Pressure Transducer on analog pin 3 (A3)
+#define SDCS 10 // SD Card CS is at 10
 
 float TRead; // Temperature Read in C
 float Time; // Time values
@@ -20,19 +20,22 @@ File PresFile;
 File TimeFile;
 
 void setup() {
-SD.remove("TempFile.txt");
-SD.remove("PresFile.txt");
-if(!SD.remove("TimeFile.txt")) {
-  Serial.println("What");
-}
-
-testTime = 5000;
+testTime = 20000;
 Serial.begin(9600);
 pinMode(SDCS,OUTPUT);
 if (!SD.begin(SDCS)) {
     Serial.println("initialization failed!");
     return;
   }
+TempFile = SD.open("TempFile.txt",FILE_WRITE);
+TempFile.println("Test Start");
+TempFile.close();
+PresFile = SD.open("PresFile.txt",FILE_WRITE);
+PresFile.println("Test Start");
+PresFile.close();
+TimeFile = SD.open("TimeFile.txt",FILE_WRITE);
+TimeFile.println("Test Start");
+TimeFile.close();
 }
 
 void loop() {
@@ -42,7 +45,7 @@ void loop() {
       acquireData();
     }
     if(Done){
-      Serial.println("All done! Hope it went well.");
+      Serial.println("Done.");
       Done = false;
     }
 }
