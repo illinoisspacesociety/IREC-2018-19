@@ -1,1 +1,6 @@
-So this is a folder containing zip files. These zip files include libraries used by the Sensor code that aren't just on the library manager in the Arduino "sketch" menu dropdown.
+So this is a folder containing zip files.
+These zip files include libraries used by the Sensor code that aren't just on the library manager in the Arduino "sketch" menu dropdown.
+These Libraries are:
+
+<HX711 Load Cell Amplifier Board>
+<SDFat Improved SD Library> (Can be found in the Arduino Menu)
