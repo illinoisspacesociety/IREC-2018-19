@@ -36,10 +36,10 @@ float tare_value;
 HX711 scale(HXDOUT,HXCLK);
 Adafruit_MAX31855 thermocouple(MAXCLK, MAXCS, MAXDO);
 
+File ForFile;
 File TempFile;
 File PresFile;
 File TimeFile;
-File ForceFile;
 
 // run setup, do an initial write to the files, tare the load cell
 void setup() {
@@ -50,6 +50,9 @@ pinMode(SDCS,OUTPUT);
 if (!SD.begin(SDCS)) {
     Serial.println("initialization failed!");
   }
+ForFile = SD.open("ForFile.txt",FILE_WRITE);
+ForFile.println("Test Start [lbf]");
+ForFile.close();
 TempFile = SD.open("TempFile.txt",FILE_WRITE);
 TempFile.println("Test Start [C]");
 TempFile.close();
@@ -59,9 +62,6 @@ PresFile.close();
 TimeFile = SD.open("TimeFile.txt",FILE_WRITE);
 TimeFile.println("Test Start [ms]");
 TimeFile.close();
-ForceFile = SD.open("ForceFile.txt",FILE_WRITE);
-ForceFile.println("Test Start [lbf]");
-ForceFile.close();
 
 scale.tare();
 scale.set_scale(scale_factor);
@@ -71,20 +71,14 @@ scale.set_scale(scale_factor);
 void loop() {
     
     // Let's get the time, Temperature, and Pressure, but only for some amount of time
-    if (Time < testTime) {
+    if (!Done) {
       acquireData();
-    }
-    
-    // If connected to a computer, tells us when the program is complete
-    if(Done){
-      Serial.println("Done.");
-      Done = false;
     }
 }
 
 // function for getting force from load cell
 float FReadf() {
-    float FRead = scale.get_units(1);
+    float FRead = scale.get_units();
     return(FRead);
 }
 
@@ -100,32 +94,28 @@ float PReadf() {
 void acquireData() {
 
     // Get ya data, time first, then the others
-    Time = millis();
-    if(Time > testTime) {
+    if(millis() > testTime) {
       Done = true;
     }
-    TRead = thermocouple.readCelsius();
-    PRead = PReadf();
-    FRead = FReadf();
 
     // Let's print those
-    Serial.println("Here is Temperature: " + String(TRead));
-    Serial.println("Here is Pressure: " + String(PRead));
-    Serial.println("Here is Force: " + String(FRead));
-    Serial.println("Here is Time: " + String(Time));
-    Serial.println();
+//    Serial.println("Here is Temperature: " + String(thermocouple.readCelsius()));
+//    Serial.println("Here is Pressure: " + String(PReadf()));
+//    Serial.println("Here is Force: " + String(FReadf()));
+//    Serial.println("Here is Time: " + String(millis()));
+//    Serial.println();
 
     // Now let's store them on the SD card
+    ForFile = SD.open("ForFile.txt",FILE_WRITE);
+    ForFile.println(String(FReadf()));
+    ForFile.close();
     TempFile = SD.open("TempFile.txt",FILE_WRITE);
-    TempFile.println(String(TRead));
+    TempFile.println(String(thermocouple.readCelsius()));
     TempFile.close();
     PresFile = SD.open("PresFile.txt",FILE_WRITE);
-    PresFile.println(String(PRead));
+    PresFile.println(String(PReadf()));
     PresFile.close();
     TimeFile = SD.open("TimeFile.txt",FILE_WRITE);
-    TimeFile.println(String(Time));
+    TimeFile.println(String(millis()));
     TimeFile.close();
-    ForceFile = SD.open("ForceFile.txt",FILE_WRITE);
-    ForceFile.println(String(FRead));
-    ForceFile.close();
 }
