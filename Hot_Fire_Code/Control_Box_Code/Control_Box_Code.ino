@@ -1,10 +1,10 @@
 // ------HYBRID ROCKET ENGINE 2017 | 2018------
 // ----------Engine Startup Sequence-----------
 // --------------------------------------------
-
+#include <Servo.h>
 #define MAX_TIMERS 8
 
-// NOTE: Relays are set up in reversed polarity 
+// NOTE: Relays are set up in reversed polarity
 // Therefore: HIGH corresponds to OFF and LOW corresponds to ON
 
 // Define Variables
@@ -13,13 +13,17 @@ const int VALVE_B = 7;            // initialize the Helium valve to Pin 7 on Ard
 const int VALVE_A = 5;            // initialize the Engine valve signal to Pin 5 on Arduino board
 const int FIRE_COMMIT = 2;              // initialize the start signal to Pin 2 on Arduino board
 const int IGNITER = 3;            // initialize the ignition signal to Pin 3 on Arduino board
+const int bVPin = 4;
+int bVPos = 0;
+const int bVClose = 0;
+const int bVOpen = 120;
 
 const double COUNTDOWN_LENGTH = 50; // seconds
 const double BNOS_T = COUNTDOWN_LENGTH - 30.0; // T minus 30 seconds: pressurize NOS  (ORIGINALLY 10)
 const double ENOS_T = COUNTDOWN_LENGTH - 20.0; // T minus 20 seconds: end pressurize NOS (ORIGINALLY 5)
-const double BOXY_T = COUNTDOWN_LENGTH - 2.0; // T minus 2 seconds: oxidizer start
+const double BOXY_T = COUNTDOWN_LENGTH - 1.0; // T minus 2 seconds: oxidizer start
 const double BIGN_T = COUNTDOWN_LENGTH - 0; // T minus 0 seconds: ignition
-const double ETST_T = COUNTDOWN_LENGTH + 10; // T plus 10 seconds: end of test
+const double ETST_T = COUNTDOWN_LENGTH + 3; // T plus 10 seconds: end of test
 
 class Timer{
   private:
@@ -28,7 +32,7 @@ class Timer{
     double dt = 0.001f;
     void (*callback)();
     int timerlist_addr = -1;
-  
+
   public:
     Timer();
     Timer(double time, void (*function)());
@@ -50,20 +54,24 @@ Timer etst = Timer(ETST_T, &end_test);
 Timer *timerlist[MAX_TIMERS] = {NULL};
 int num_timers = 0;
 
+Servo ballValveServo;
+
 void setup() {
-  
+
   Serial.begin(115200);         // initialize the pressure transducer
-  
+
+  ballValveServo.attach(bVPin);
+
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
 
-  pinMode(FIRE_COMMIT, INPUT);      // START is an input signal that begins the code 
+  pinMode(FIRE_COMMIT, INPUT);      // START is an input signal that begins the code
   pinMode(IGNITER, OUTPUT);   // IGNITER is an output that sends the ignition signal
-  pinMode(VALVE_A, OUTPUT);   // VALVE_A is an output signal to open the Engine valve                    
-  pinMode(VALVE_B, OUTPUT);   // VALVE_B is an output signal to open the Helium valve   
+  pinMode(VALVE_A, OUTPUT);   // VALVE_A is an output signal to open the Engine valve
+  pinMode(VALVE_B, OUTPUT);   // VALVE_B is an output signal to open the Helium valve
 
-  digitalWrite(VALVE_A,HIGH);                   // initialize engine valve to OFF 
+  digitalWrite(VALVE_A,HIGH);                   // initialize engine valve to OFF
   digitalWrite(VALVE_B,HIGH);                   // initialize the helium valve to OFF
   digitalWrite(IGNITER,HIGH);                   // initialize the igniter to OFF
 
@@ -75,11 +83,11 @@ void setup() {
   TCCR1A = 0;// set entire TCCR1A register to 0
   TCCR1B = 0;// same for TCCR1B
   TCNT1  = 0;//initialize counter value to 0
-  
+
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
   // Set CS10 and CS12 bits for 1024 prescaler
-  TCCR1B |= (1 << CS10);  
+  TCCR1B |= (1 << CS10);
   // enable timer compare interrupt
   TIMSK1 |= (1 << OCIE1A);
 
@@ -105,11 +113,11 @@ bool valveB = false;
 bool igniter = false;
 
 // Engine Sequence
-void loop() { 
+void loop() {
   if (Serial.available()) {
     char command[100];
   //  command[0] = '\0';
-  
+
 //    Serial.setTimeout(10);
     int len = Serial.readBytes(command, 100);
   //  Serial.println(len);
@@ -120,8 +128,10 @@ void loop() {
       reset_system();
     } else if (String(command) == "purge") {
       purge_system();
-    } else if (String(command) == "A") {
-      toggle_A();
+    } else if (String(command) == "open A") {
+      bVOpen();
+    } else if (String(command) == "close A") {
+      bVClose();
     } else if (String(command) == "B") {
       toggle_B();
     } else if (String(command) == "status") {
@@ -142,11 +152,11 @@ void loop() {
       Serial.print("> "); Serial.println(command);
       Serial.println("Not a recognized command!");
     }
-  
+
   }
   // NOTE: Code is waiting for start signal at this stage
 //  while(STATUS == 0) {
-//    
+//
 //    STATUS = digitalRead(START);                  // redefine status after start signal
 //    CBE_PRESSURE = 5*(analogRead(PRESSURE_SENSOR)/1023);   // read values from pressure transducer
 //    Serial.println(CBE_PRESSURE);                 // print values to serial monitor (Ctrl + Shift + M)
@@ -156,34 +166,52 @@ void loop() {
 
 void reset_system() {
   digitalWrite(VALVE_A,HIGH);
-  digitalWrite(VALVE_B,HIGH);
+  bVClose();
 
+  digitalWrite(VALVE_B,HIGH);
   Serial.println("> reset");
-  
+
   valveA = false;
   valveB = false;
 }
 
 void purge_system() {
   digitalWrite(VALVE_A,LOW);
+  bVOpen();
   digitalWrite(VALVE_B,LOW);
 
   Serial.println("> purge");
-  
+
   valveA = true;
   valveB = true;
 }
 
-void toggle_A() {
-  Serial.println("> A");
-  
-  if (valveA) digitalWrite(VALVE_A,HIGH); else digitalWrite(VALVE_A,LOW);
-  valveA = !valveA;
+// void toggle_A() {
+//   Serial.println("> A");
+//
+//   if (valveA) digitalWrite(VALVE_A,HIGH); else digitalWrite(VALVE_A,LOW);
+//   valveA = !valveA;
+// }
+
+void open_A() {
+  while(i = bVClose, i < bVOpen, i++) {
+    ballValveServo.write(i);
+    delay(3);
+  }
+  valveA = true;
+}
+
+void close_A() {
+  while(i = bVOpen, i > bVClose, i++) {
+    ballValveServo.write(i);
+    delay(3);
+  }
+  valveA = false;
 }
 
 void toggle_B() {
   Serial.println("> B");
-  
+
   if (valveB) digitalWrite(VALVE_B,HIGH); else digitalWrite(VALVE_B,LOW);
   valveB = !valveB;
 }
@@ -192,11 +220,8 @@ void print_status() {
   Serial.println("> status");
   String a = valveA ? "OPEN": "CLOSED";
   String b = valveB ? "OPEN": "CLOSED";
-  double pressureReadingInVolts = (5*analogRead(PRESSURE_SENSOR)/1023);
-  double pressureInPSIG = 2000*(pressureReadingInVolts-.498)/5.02;
   Serial.print("Valve A is: "); Serial.println(a);
   Serial.print("Valve B is: "); Serial.println(b);
-  Serial.print("Pressure is: "); Serial.print(pressureInPSIG); Serial.println(" PSIG");
 }
 
 bool countdown_GO = true;
@@ -208,7 +233,7 @@ void start() {
   reset_system(); // close all valves
   countdown_GO = true;
   test_finished = false;
-  
+
   while (digitalRead(FIRE_COMMIT)) {
     if (Serial.available()) {
       char command[100];
@@ -220,7 +245,7 @@ void start() {
     }
     Serial.println("Firing Commit Switch is ON! Turn it OFF to start countdown or type 'abort'.");
   }
-  
+
   Serial.println("STARTING COUNTDOWN");
 
   bnos.reset_timer();
@@ -269,7 +294,7 @@ void start() {
       Serial.print("Valve B is: "); Serial.println(b);
       Serial.print("Igniter is: "); Serial.println(g);
       Serial.print("Pressure is: "); Serial.println(analogRead(PRESSURE_SENSOR));
-      
+
     }
   }
 }
@@ -318,6 +343,7 @@ void start_oxidizer() {
   {
     digitalWrite(VALVE_A,LOW);
     valveA = true;
+    bVOpen();
   }
   else {
     Serial.println("Countdown not GO at START OXIDIZER FLOW");
@@ -345,7 +371,7 @@ void end_test() {
   Serial.println("================================================================");
   Serial.println("END TEST");
   Serial.println("================================================================");
-  digitalWrite(VALVE_A,HIGH);
+  bVClose();
   valveA = false;
   digitalWrite(IGNITER,HIGH);
   igniter = false;
@@ -394,14 +420,14 @@ void Timer::start_timer() {
     }
     else Serial.println("ERROR: Attempted to create 9 timers");
   }
-  
+
 //  report();
 //  Serial.println("Done Starting Timer\n");
 }
 void Timer::pause_timer() {
 //  Serial.println("Pause Timer");
 //  report();
-  
+
   if (final_time > 0 && timerlist_addr >= 0) {
     for (timerlist_addr; timerlist_addr < num_timers - 2; timerlist_addr++) {
       timerlist[timerlist_addr] = timerlist[timerlist_addr + 1];
@@ -412,7 +438,7 @@ void Timer::pause_timer() {
     timerlist_addr = -1;
   }
 
-  
+
 //  report();
 //  Serial.println("Done Pausing Timer\n");
 }
