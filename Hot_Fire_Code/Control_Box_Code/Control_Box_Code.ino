@@ -14,7 +14,6 @@ const int VALVE_A = 5;            // initialize the Engine valve signal to Pin 5
 const int FIRE_COMMIT = 2;              // initialize the start signal to Pin 2 on Arduino board
 const int IGNITER = 3;            // initialize the ignition signal to Pin 3 on Arduino board
 const int bVPin = 4;
-int bVPos = 0;
 const int bVClose = 0;
 const int bVOpen = 120;
 
