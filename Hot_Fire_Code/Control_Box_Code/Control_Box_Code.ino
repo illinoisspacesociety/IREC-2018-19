@@ -1,7 +1,7 @@
 // ------HYBRID ROCKET ENGINE 2017 | 2018------
 // ----------Engine Startup Sequence-----------
 // --------------------------------------------
-#include <Servo.h>
+//#include <Servo.h>
 #define MAX_TIMERS 8
 
 // NOTE: Relays are set up in reversed polarity
@@ -53,13 +53,13 @@ Timer etst = Timer(ETST_T, &end_test);
 Timer *timerlist[MAX_TIMERS] = {NULL};
 int num_timers = 0;
 
-Servo ballValveServo;
+//Servo ballValveServo;
 
 void setup() {
 
   Serial.begin(115200);         // initialize the pressure transducer
 
-  ballValveServo.attach(bVPin);
+//  ballValveServo.attach(bVPin);
 
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
@@ -128,9 +128,9 @@ void loop() {
     } else if (String(command) == "purge") {
       purge_system();
     } else if (String(command) == "open A") {
-      bVOpen();
+      open_A();
     } else if (String(command) == "close A") {
-      bVClose();
+      close_A();
     } else if (String(command) == "B") {
       toggle_B();
     } else if (String(command) == "status") {
@@ -165,7 +165,7 @@ void loop() {
 
 void reset_system() {
   digitalWrite(VALVE_A,HIGH);
-  bVClose();
+  close_A();
 
   digitalWrite(VALVE_B,HIGH);
   Serial.println("> reset");
@@ -176,7 +176,7 @@ void reset_system() {
 
 void purge_system() {
   digitalWrite(VALVE_A,LOW);
-  bVOpen();
+  open_A();
   digitalWrite(VALVE_B,LOW);
 
   Serial.println("> purge");
@@ -193,18 +193,12 @@ void purge_system() {
 // }
 
 void open_A() {
-  while(i = bVClose, i < bVOpen, i++) {
-    ballValveServo.write(i);
-    delay(3);
-  }
+  analogWrite(bVPin,255);
   valveA = true;
 }
 
 void close_A() {
-  while(i = bVOpen, i > bVClose, i++) {
-    ballValveServo.write(i);
-    delay(3);
-  }
+  analogWrite(bVPin,0);
   valveA = false;
 }
 
@@ -342,7 +336,7 @@ void start_oxidizer() {
   {
     digitalWrite(VALVE_A,LOW);
     valveA = true;
-    bVOpen();
+    open_A();
   }
   else {
     Serial.println("Countdown not GO at START OXIDIZER FLOW");
@@ -370,7 +364,7 @@ void end_test() {
   Serial.println("================================================================");
   Serial.println("END TEST");
   Serial.println("================================================================");
-  bVClose();
+  close_A();
   valveA = false;
   digitalWrite(IGNITER,HIGH);
   igniter = false;
