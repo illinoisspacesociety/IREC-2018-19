@@ -1,8 +1,7 @@
 //include the libraries for the various sensors
-#include <HX711.h>
+#include "HX711.h"
 #include <SPI.h>
 #include "Adafruit_MAX31855.h"
-#include <SD.h>
 #include "SdFat.h"
 #include <Wire.h>
 
@@ -36,6 +35,7 @@ float tare_value;
 HX711 scale(HXDOUT,HXCLK);
 Adafruit_MAX31855 thermocouple(MAXCLK, MAXCS, MAXDO);
 
+SdFat SD;
 File ForFile;
 File TempFile;
 File PresFile;
@@ -47,7 +47,7 @@ void setup() {
 Serial.begin(115200);
 
 pinMode(SDCS,OUTPUT);
-if (!SD.begin(SDCS)) {
+if (!SD.begin(SDCS,SD_SCK_MHZ(50))) {
     Serial.println("initialization failed!");
   }
 ForFile = SD.open("ForFile.txt",FILE_WRITE);
