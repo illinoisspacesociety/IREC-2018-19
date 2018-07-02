@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 Servo bVServo;
-const int bVOpen = 120;
+const int bVOpen = 150;
 const int bVClose = 0;
 const int bVPin = 2;
 const int delayToFlow = 5000;
