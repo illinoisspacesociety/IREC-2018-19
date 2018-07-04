@@ -22,7 +22,7 @@ const double BNOS_T = COUNTDOWN_LENGTH - 30.0; // T minus 30 seconds: pressurize
 const double ENOS_T = COUNTDOWN_LENGTH - 20.0; // T minus 20 seconds: end pressurize NOS (ORIGINALLY 5)
 const double BOXY_T = COUNTDOWN_LENGTH - 1.0; // T minus 2 seconds: oxidizer start
 const double BIGN_T = COUNTDOWN_LENGTH - 0; // T minus 0 seconds: ignition
-const double ETST_T = COUNTDOWN_LENGTH + 3; // T plus 10 seconds: end of test
+const double ETST_T = COUNTDOWN_LENGTH + 5; // T plus 10 seconds: end of test
 
 class Timer{
   private:
