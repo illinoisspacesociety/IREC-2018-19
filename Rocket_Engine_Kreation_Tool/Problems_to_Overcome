@@ -1,8 +1,0 @@
-# PROBLEMS TO OVERCOME
-#---------------------------------------------------------------------------------#
-# This is more of a notepad on problems I'm considering as I go
-#---------------------------------------------------------------------------------#
-# - How is combustion chamber pressure (p1) found
-# - How does one find k, cp, cv, or Qr for a reaction (CEA?)
-# - How do I make this an interactive type program, something that figures things
-# out for itself if it needs ya know?
