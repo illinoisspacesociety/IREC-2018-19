@@ -3,4 +3,4 @@ This is the github repository for the 2018-19 Illinois Space Society IREC team. 
 
 The repository is meant to be more than just a home for code. It will also be a source of useful texts and links. These will include our website, youtube playlists, and online textbooks we find to be useful. It will also include the sharepoint, the google drive, and others.
 
-The code will be easily accessible to all this way, and it will allow us to do version control easier than ever before instead of fumbling with a ton of different .ino files in a menagery of google drive folders. 
+The code will be easily accessible to all this way, and it will allow us to do version control easier than ever before instead of fumbling with a ton of different .ino files in a menagerie of google drive folders. 
